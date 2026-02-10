@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ก้องระเบิด: GitHub Collections</title>
+    <title>ก้องระเบิด: Mobile Optimized</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -11,6 +11,7 @@
             --card-surface: #151515;
             --holy-accent: #00ff88;
             --cursed-accent: #ff4d4d;
+            --sidebar-width: 350px;
         }
 
         body {
@@ -23,28 +24,27 @@
             overflow: hidden;
         }
 
+        /* ส่วนแสดงการ์ด */
         .main-container {
             flex: 1;
-            padding: 30px;
+            padding: 20px;
             overflow-y: auto;
-            scrollbar-width: thin;
+            transition: 0.3s;
         }
 
         .category-title {
-            font-size: 1.8em;
+            font-size: 1.5em;
             font-weight: 800;
-            margin: 40px 0 15px 0;
-            padding-left: 15px;
-            border-left: 5px solid;
-            letter-spacing: 1px;
+            margin: 30px 0 10px 0;
+            padding-left: 10px;
+            border-left: 4px solid;
         }
 
         .card-row {
             display: flex;
-            flex-wrap: nowrap;
-            gap: 12px;
-            margin-bottom: 25px;
-            padding: 5px;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
             overflow-x: auto;
         }
 
@@ -52,137 +52,172 @@
             background: #000;
             border-radius: 8px;
             border: 2px solid #333;
-            transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            width: 120px;
+            width: 100px;
             aspect-ratio: 2/3;
             flex-shrink: 0;
+            cursor: pointer;
             overflow: hidden;
-            display: flex;
         }
 
-        .card:hover {
-            transform: scale(1.05);
-            z-index: 2;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-        }
+        .card-img { width: 100%; height: 100%; object-fit: cover; }
 
-        .card-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
+        /* Sidebar - ปรับให้หุบได้ */
         .sidebar {
-            width: 380px;
+            width: var(--sidebar-width);
             background: #000;
-            padding: 25px;
+            padding: 20px;
             border-left: 1px solid #222;
             display: flex;
             flex-direction: column;
+            position: relative;
+            transition: transform 0.3s ease-in-out;
+            z-index: 100;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(100%);
+            position: absolute;
+            right: 0;
+            height: 100%;
+        }
+
+        /* ปุ่มเปิด-ปิด Sidebar */
+        .toggle-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--holy-accent);
+            color: #000;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 101;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .detail-view {
             background: #111;
-            border-radius: 20px;
-            padding: 25px;
+            border-radius: 15px;
+            padding: 20px;
             text-align: center;
             border: 1px solid #333;
             flex-grow: 1;
+            overflow-y: auto;
         }
 
         .detail-img-large {
             width: 100%;
-            aspect-ratio: 2/3;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            object-fit: contain;
-            background: #000;
+            border-radius: 10px;
+            margin-bottom: 15px;
         }
 
-        .detail-title { font-size: 2em; font-weight: 800; margin-bottom: 5px; }
-        .detail-count { color: #888; font-size: 1.1em; margin-bottom: 10px; }
-        .detail-desc { color: #ccc; line-height: 1.8; font-size: 1em; text-align: left; background: #1a1a1a; padding: 15px; border-radius: 10px; }
+        .detail-title { font-size: 1.5em; font-weight: 800; }
+        .detail-count { color: #888; font-size: 0.9em; margin-bottom: 10px; }
+        .detail-desc { color: #ccc; font-size: 0.9em; text-align: left; background: #1a1a1a; padding: 12px; border-radius: 8px; }
 
         .draw-btn {
-            background: #fff; color: #000; border: none; padding: 15px;
-            border-radius: 10px; font-weight: 800; margin-bottom: 20px; cursor: pointer;
+            background: #fff; color: #000; border: none; padding: 12px;
+            border-radius: 8px; font-weight: 800; margin-bottom: 15px; cursor: pointer;
+        }
+
+        /* ปรับแต่งสำหรับ Mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                right: 0;
+                top: 0;
+                height: 100vh;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+            }
+            .sidebar.collapsed {
+                transform: translateX(100%);
+            }
         }
     </style>
 </head>
 <body>
 
+    <button class="toggle-btn" onclick="toggleSidebar()" id="btnIcon">👁️</button>
+
     <div class="main-container" id="gridContainer"></div>
 
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <button class="draw-btn" onclick="randomDraw()">🎲 สุ่มจั่วการ์ด</button>
         <div class="detail-view" id="detailView"></div>
     </div>
 
 <script>
-    // URL พื้นฐานสำหรับดึงรูปภาพจาก GitHub
     const rawBaseURL = "https://raw.githubusercontent.com/winterzthegreat/winterzcards-collections/main/components/";
-
     const typeColors = {
-        "ฮาร์ทเลิฟเลิฟ": "#ff4d94", "อย่าอย่าอย่า": "#ff4444", "จู่โจม": "#ff8800",
-        "ระเบิด": "#ffcc00", "ตัวตัวได้": "#00d4ff", "ขโมย": "#9d4edd",
-        "เอามาใช้บ้าง": "#00ff88", "เปิดเผย": "#ffffff", "พายุเคออส": "#4cc9f0",
+        "ฮาร์ทเลิฟเลิฟ": "#ff4d94", "อย่าอย่าอย่า": "#ff4444", "เอามาใช้บ้าง": "#00ff88",
+        "จู่โจม": "#ff8800", "ตัวตัวได้": "#00d4ff", "เปิดเผย": "#ffffff", 
+        "พายุเคออส": "#4cc9f0", "ขโมย": "#9d4edd", "ระเบิด": "#ffcc00", 
         "ไม่ต้องพูดด~~": "#555555", "ประชาทัณฑ์": "#ff0000"
     };
 
     const sections = [
         {
-            title: "กองการ์ดดี",
-            color: "var(--holy-accent)",
+            title: "กองการ์ดดี", color: "var(--holy-accent)",
             groups: [
                 { name: "ฮาร์ทเลิฟเลิฟ", count: "5 ใบ", variants: [
-                    {v:"เห็นแก่เกรดอิ่มใจ", img:"h_i.png", d:"ได้หัวใจ 1 ดวง (หากหัวใจหมด ทีมของคุณจะแพ้ออกจากเกม)"},
-                    {v:"เบเน่ก็มีหัวจัย", img:"h_b.png", d:"ได้หัวใจ 1 ดวง (หากหัวใจหมด ทีมของคุณจะแพ้ออกจากเกม)"},
-                    {v:"หนุ่ยเลิฟๆ", img:"h_n.png", d:"ได้หัวใจ 1 ดวง (หากหัวใจหมด ทีมของคุณจะแพ้ออกจากเกม)"}
+                    {v:"เห็นแก่เกรดอิ่มใจ", img:"h_i.png", d:"ได้หัวใจ 1 ดวง"},
+                    {v:"เบเน่ก็มีหัวจัย", img:"h_b.png", d:"ได้หัวใจ 1 ดวง"},
+                    {v:"หนุ่ยเลิฟๆ", img:"h_n.png", d:"ได้หัวใจ 1 ดวง"}
                 ] },
                 { name: "อย่าอย่าอย่า", count: "10 ใบ", variants: [
-                    {v:"ก้องสั่งหยุด", img:"s_k.png", d:"ยกเลิกผลของการ์ดใบอื่น ใช้ขัดขวางการโจมตีหรือการใช้ความสามารถของทีมอื่นได้ทันทีโดยไม่จำเป็นต้องเป็นเทิร์นของตัวเอง"},
-                    {v:"ก้องซุปเปอร์เซฟ", img:"s_ks.png", d:"ยกเลิกผลของการ์ดใบอื่น ใช้ขัดขวางการโจมตีหรือการใช้ความสามารถของทีมอื่นได้ทันทีโดยไม่จำเป็นต้องเป็นเทิร์นของตัวเอง"}
+                    {v:"ก้องสั่งหยุด", img:"s_k.png", d:"ยกเลิกผลของการ์ดใบอื่น ใช้ขัดขวางการโจมตีหรือความสามารถทีมอื่นได้ทันที"},
+                    {v:"ก้องซุปเปอร์เซฟ", img:"s_ks.png", d:"ยกเลิกผลของการ์ดใบอื่น"}
                 ] },
-                { name: "เอามาใช้บ้าง", count: "4 ใบ", variants: [{v:"หนุ่ยเด็กเกรียน", img:"chaos.png", d:"สลับการ์ดในมือทั้งหมด กับทีมเป้าหมายที่เลือก"}] },
+                { name: "เอามาใช้บ้าง", count: "4 ใบ", variants: [{v:"หนุ่ยเด็กเกรียน", img:"chaos.png", d:"สลับการ์ดในมือทั้งหมด"}] },
                 { name: "จู่โจม", count: "6 + 3DX ใบ", variants: [
-                    {v:"ก้องแม่นปืน", img:"a_std.png", d:"ลดหัวใจทีมถัดไป 1 ดวง และสามารถใช้การ์ดจู่โจมเพื่อยกเลิกจู่โจมประเภทเดียวกันได้"},
-                    {v:"เดย์เซียนสไน DX", img:"a_dx.png", d:"(ถ้าเป็นการ์ด DX: สามารถเลือกโจมตีทีมไหนก็ได้)"}
+                    {v:"ก้องแม่นปืน", img:"a_std.png", d:"ลดหัวใจทีมถัดไป 1 ดวง"},
+                    {v:"เดย์เซียนสไน DX", img:"a_dx.png", d:"เลือกโจมตีทีมไหนก็ได้"}
                 ] },
                 { name: "ตัวตัวได้", count: "8 ใบ", variants: [
-                    {v:"อิ่มใจโหดสุดแล้ว", img:"duel_i.png", d:"ท้าทีมอื่นตอบคำถาม ถ้าใครตอบถูกก่อนจะได้การ์ดหัวใจจากอีกฝั่ง แต่ถ้าผิดทั้งคู่จะต้องจั่วกองแย่คนละ 1 ใบ"},
-                    {v:"ซันเดย์มาเอาแชมป์", img:"duel_s.png", d:"ท้าทีมอื่นตอบคำถาม ถ้าใครตอบถูกก่อนจะได้การ์ดหัวใจจากอีกฝั่ง แต่ถ้าผิดทั้งคู่จะต้องจั่วกองแย่คนละ 1 ใบ"},
+                    {v:"อิ่มใจโหดสุดแล้ว", img:"duel_i.png", d:"ท้าทีมอื่นตอบคำถาม"},
+                    {v:"ซันเดย์มาเอาแชมป์", img:"duel_s.png", d:"ท้าทีมอื่นตอบคำถาม"}
                 ] },
-                { name: "เปิดเผย", count: "3 ใบ", variants: [{v:"ก้องเบิกเนตร", img:"reveal.png", d:"เลือกกลุ่มที่จะต้องเปิดไพ่ทั้งหมดจนกว่าจะลงการ์ดใหม่หรือจบเทิร์น"}] },
-                { name: "พายุเคออส", count: "3 ใบ", variants: [{v:"เบเน่พิโรธแล้ว", img:"chaos.png", d:"สลับกองการ์ดของทุกกลุ่ม วนไปทางเข็มนาฬิกา"}] },
+                { name: "เปิดเผย", count: "3 ใบ", variants: [{v:"ก้องเบิกเนตร", img:"reveal.png", d:"บังคับเปิดไพ่จนจบเทิร์น"}] },
+                { name: "พายุเคออส", count: "3 ใบ", variants: [{v:"เบเน่พิโรธแล้ว", img:"chaos.png", d:"สลับกองการ์ดทุกกลุ่ม"}] },
                 { name: "ขโมย", count: "6 + 2DX ใบ", variants: [
-                    {v:"ล้วงกระเป๋า", img:"st_std.png", d:"สุ่มหยิบการ์ด 1 ใบ จากมือทีมอื่น"},
-                    {v:"ก้องหัวหน้าจอมโจร DX", img:"st_dx.png", d:"(ถ้าเป็นการ์ด DX: จะขอโดยเลือกชนิดการ์ดได้)"}
+                    {v:"ล้วงกระเป๋า", img:"st_std.png", d:"สุ่มหยิบการ์ด 1 ใบ"},
+                    {v:"ก้องหัวหน้าจอมโจร DX", img:"st_dx.png", d:"เลือกชนิดการ์ดที่จะขอได้"}
                 ] }
             ]
         },
         {
-            title: "ระเบิด",
-            color: "#ffcc00",
+            title: "ระเบิด", color: "#ffcc00",
             groups: [
-                { name: "ระเบิด", count: "12 ใบ (ดี) / 4 ใบ (แย่)", variants: [
-                    {v:"ภพเท่ระเบิด", img:"b_p.png", d:"เสียหัวใจ 1 ดวง ทันที"},
-                    {v:"ทานระเบิดกับก้องมั้ย", img:"b_k.png", d:"เสียหัวใจ 1 ดวง ทันที"}
+                { name: "ระเบิด", count: "12 (ดี) / 4 (แย่)", variants: [
+                    {v:"ภพเท่ระเบิด", img:"b_p.png", d:"เสียหัวใจ 1 ดวง"},
+                    {v:"ทานระเบิดกับก้องมั้ย", img:"b_k.png", d:"เสียหัวใจ 1 ดวง"}
                 ] }
             ]
         },
         {
-            title: "กองการ์ดแย่",
-            color: "var(--cursed-accent)",
+            title: "กองการ์ดแย่", color: "var(--cursed-accent)",
             groups: [
-                { name: "ไม่ต้องพูดด~~", count: "3 ใบ", variants: [{v:"แพรจุ๊ๆ", img:"s_k.png", d:"ห้ามใช้การ์ดความสามารถพิเศษในเทิร์นหน้า"}] },
+                { name: "ไม่ต้องพูดด~~", count: "3 ใบ", variants: [{v:"แพรจุ๊ๆ", img:"s_k.png", d:"ห้ามใช้ความสามารถในเทิร์นหน้า"}] },
                 { name: "ประชาทัณฑ์", count: "5 ใบ", variants: [
-                    {v:"ก้องโดนประหาร", img:"bullyk.png", d:"ผลเสียทั้งหมดจะพุ่งมาลงที่คุณคนเดียว"},
-                    {v:"หนุ่ยชอบกินกล้วย", img:"bullyn.png", d:"ผลเสียทั้งหมดจะพุ่งมาลงที่คุณคนเดียว"}
+                    {v:"ก้องโดนประหาร", img:"bullyk.png", d:"ผลเสียทั้งหมดลงที่คุณคนเดียว"},
+                    {v:"หนุ่ยชอบกินกล้วย", img:"bullyn.png", d:"ผลเสียทั้งหมดลงที่คุณคนเดียว"}
                 ] }
             ]
         }
     ];
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const btnIcon = document.getElementById('btnIcon');
+        sidebar.classList.toggle('collapsed');
+        btnIcon.innerText = sidebar.classList.contains('collapsed') ? '👁️' : '❌';
+    }
 
     function render() {
         const container = document.getElementById('gridContainer');
@@ -203,31 +238,29 @@
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.style.borderColor = color;
-                    card.onclick = () => showDetail(group, v, color);
-                    
-                    const img = document.createElement('img');
-                    img.src = rawBaseURL + v.img; // ใช้ URL เต็ม
-                    img.className = 'card-img';
-                    img.onerror = () => {
-                        img.style.display = 'none';
-                        card.style.background = '#222';
-                        card.innerHTML = `<small style="font-size:8px; padding:2px;">Missing: ${v.img}</small>`;
+                    card.onclick = () => {
+                        showDetail(group, v, color);
+                        if(window.innerWidth <= 768) toggleSidebar(); // เปิด sidebar อัตโนมัติเมื่อเลือกการ์ดในมือถือ
                     };
-                    
+                    const img = document.createElement('img');
+                    img.src = rawBaseURL + v.img;
+                    img.className = 'card-img';
+                    img.onerror = () => { card.style.background = '#222'; };
                     card.appendChild(img);
                     row.appendChild(card);
                 });
                 container.appendChild(row);
             });
         });
+        // ตั้งค่าเริ่มต้นให้ Sidebar ปิดบนมือถือ
+        if(window.innerWidth <= 768) toggleSidebar();
         showDetail(sections[0].groups[0], sections[0].groups[0].variants[0], typeColors[sections[0].groups[0].name]);
     }
 
     function showDetail(group, v, color) {
         const view = document.getElementById('detailView');
-        const fullImgURL = rawBaseURL + v.img;
         view.innerHTML = `
-            <img src="${fullImgURL}" class="detail-img-large" style="border: 3px solid ${color}">
+            <img src="${rawBaseURL + v.img}" class="detail-img-large" style="border: 3px solid ${color}">
             <div class="detail-title" style="color:${color}">${group.name}</div>
             <div class="detail-count">${group.count} | ${v.v}</div>
             <div class="detail-desc">${v.d}</div>
