@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ก้องระเบิด: Mobile Fixed Edition</title>
+    <title>ก้องระเบิด</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -11,7 +11,7 @@
             --card-surface: #151515;
             --holy-accent: #00ff88;
             --cursed-accent: #ff4d4d;
-            --sidebar-width: 350px;
+            --sidebar-width: 380px;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -25,10 +25,33 @@
             overflow: hidden;
         }
 
+        /* --- New Title Bar --- */
+        .header-bar {
+            width: 100%;
+            height: 60px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #222;
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+        }
+
+        .header-title {
+            font-size: 1.8em;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
         .app-container {
             display: flex;
             width: 100%;
-            height: 100dvh; 
+            height: calc(100dvh - 60px); /* หักลบความสูงของ Header */
             overflow: hidden;
             position: relative;
         }
@@ -46,7 +69,6 @@
             margin: 30px 0 15px 0;
             padding-left: 12px;
             border-left: 5px solid;
-            color: var(--holy-accent);
         }
 
         .card-row {
@@ -61,17 +83,17 @@
 
         .card {
             background: #000;
-            border-radius: 12px;
+            border-radius: 10px;
             border: 2px solid #333;
             width: 110px;
             aspect-ratio: 2/3;
             flex-shrink: 0;
             cursor: pointer;
             overflow: hidden;
-            transition: transform 0.1s;
+            transition: 0.2s;
         }
         .card:active { transform: scale(0.95); }
-        .card-img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; }
 
         .sidebar {
             width: var(--sidebar-width);
@@ -79,7 +101,7 @@
             border-left: 1px solid #222;
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding: 25px;
             z-index: 1000;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -94,17 +116,16 @@
             overflow-y: auto;
         }
 
-        /* แก้ไขส่วนรูปการ์ดในหน้าต่างรายละเอียด */
         .detail-img-large {
             width: 100%;
-            max-width: 240px; /* จำกัดความกว้างไม่ให้ใหญ่ไป */
-            aspect-ratio: 2/3; /* บังคับทรงแนวตั้งเสมอ ไม่เป็นสี่เหลี่ยมจัตุรัส */
-            object-fit: cover; /* ให้รูปเต็มกรอบแนวตั้ง */
-            border-radius: 15px; /* ขอบมนสวยงาม */
+            max-width: 260px;
+            aspect-ratio: 2/3; 
+            object-fit: cover;
+            border-radius: 15px;
             margin: 0 auto 20px auto;
             display: block;
             background: #000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
 
         .draw-btn {
@@ -117,7 +138,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             z-index: 999;
         }
 
@@ -126,7 +147,7 @@
                 position: fixed;
                 bottom: 0; left: 0;
                 width: 100%;
-                height: 75dvh;
+                height: 80dvh;
                 border-left: none;
                 border-top: 2px solid #444;
                 border-radius: 30px 30px 0 0;
@@ -135,8 +156,8 @@
             .sidebar.active { transform: translateY(0); }
             .overlay.active { display: block; }
             .close-handle {
-                width: 50px; height: 5px; background: #444;
-                border-radius: 10px; margin: 0 auto 15px auto;
+                width: 60px; height: 6px; background: #444;
+                border-radius: 10px; margin: 0 auto 10px auto;
             }
         }
 
@@ -144,10 +165,10 @@
             display: none;
             position: fixed;
             right: 20px; bottom: 20px;
-            width: 60px; height: 60px;
+            width: 65px; height: 65px;
             background: var(--holy-accent);
             color: #000; border: none; border-radius: 50%;
-            font-size: 24px; z-index: 998; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            font-size: 28px; z-index: 998; box-shadow: 0 4px 20px rgba(0,255,136,0.3);
         }
         @media (max-width: 768px) { .fab-btn { display: flex; align-items: center; justify-content: center; } }
         
@@ -155,8 +176,12 @@
 </head>
 <body>
 
+    <header class="header-bar">
+        <div class="header-title">ก้องระเบิด</div>
+    </header>
+
     <div class="overlay" id="overlay" onclick="toggleSidebar(false)"></div>
-    <button class="fab-btn" onclick="toggleSidebar(true)">🎲</button>
+    <button class="fab-btn" onclick="randomDraw()">🎲</button>
 
     <div class="app-container">
         <main class="main-content" id="gridContainer"></main>
@@ -171,29 +196,40 @@
 <script>
     const rawBaseURL = "https://raw.githubusercontent.com/winterzthegreat/winterzcards-collections/main/components/";
     const typeColors = {
-        "ฮาร์ทเลิฟเลิฟ": "#ff4d94", "อย่าอย่าอย่า": "#ff4444", "เอามาใช้บ้าง": "#00ff88",
-        "จู่โจม": "#ff8800", "ตัวตัวได้": "#00d4ff", "เปิดเผย": "#ffffff", 
-        "พายุเคออส": "#4cc9f0", "ขโมย": "#9d4edd", "ระเบิด": "#ffcc00", 
+        "ฮาร์ทเลิฟเลิฟ": "#ff4d94", "อย่าอย่าอย่า": "#ff4444", "จู่โจม": "#ff8800",
+        "ระเบิด": "#ffcc00", "ตัวตัวได้": "#00d4ff", "ขโมย": "#9d4edd",
+        "เอามาใช้บ้าง": "#00ff88", "เปิดเผย": "#ffffff", "พายุเคออส": "#4cc9f0",
         "ไม่ต้องพูดด~~": "#555555", "ประชาทัณฑ์": "#ff0000"
     };
 
-    // ส่วนของข้อมูลการ์ด (คงเดิม)
     const sections = [
         {
             title: "🟢 กองการ์ดดี", color: "var(--holy-accent)",
             groups: [
                 { name: "ฮาร์ทเลิฟเลิฟ", count: "5 ใบ", variants: [
                     {v:"เห็นแก่เกรดอิ่มใจ", img:"h_i.png", d:"ได้หัวใจ 1 ดวง (หากหัวใจหมด ทีมของคุณจะแพ้ออกจากเกม)"},
-                    {v:"เบเน่ก็มีหัวจัย", img:"h_b.png", d:"ได้หัวใจ 1 ดวง (หากหัวใจหมด ทีมของคุณจะแพ้ออกจากเกม)"},
-                    {v:"หนุ่ยเลิฟๆ", img:"h_n.png", d:"ได้หัวใจ 1 ดวง (หากหัวใจหมด ทีมของคุณจะแพ้ออกจากเกม)"}
+                    {v:"เบเน่ก็มีหัวจัย", img:"h_b.png", d:"ได้หัวใจ 1 ดวง"},
+                    {v:"หนุ่ยเลิฟๆ", img:"h_n.png", d:"ได้หัวใจ 1 ดวง"}
                 ] },
                 { name: "อย่าอย่าอย่า", count: "10 ใบ", variants: [
-                    {v:"ก้องสั่งหยุด", img:"s_k.png", d:"ยกเลิกผลของการ์ดใบอื่น ใช้ขัดขวางการโจมตีทีมอื่นได้ทันที"},
+                    {v:"ก้องสั่งหยุด", img:"s_k.png", d:"ยกเลิกผลของการ์ดใบอื่น ใช้ขัดขวางทีมอื่นได้ทันที"},
                     {v:"ก้องซุปเปอร์เซฟ", img:"s_ks.png", d:"ยกเลิกผลของการ์ดใบอื่น"}
                 ] },
-                { name: "ขโมย", count: "8 ใบ", variants: [
-                    {v:"ล้วงกระเป๋า", img:"st_std.png", d:"สุ่มหยิบการ์ด 1 ใบ"},
-                    {v:"ก้องหัวหน้าจอมโจร DX", img:"st_dx.png", d:"เลือกชนิดการ์ดที่จะขอได้"}
+                { name: "เอามาใช้บ้าง", count: "4 ใบ", variants: [{v:"หนุ่ยเด็กเกรียน", img:"chaos.png", d:"สลับการ์ดในมือทั้งหมดกับทีมเป้าหมาย"}] },
+                { name: "จู่โจม", count: "6 + 3DX ใบ", variants: [
+                    {v:"ก้องแม่นปืน", img:"a_std.png", d:"ลดหัวใจทีมถัดไป 1 ดวง"},
+                    {v:"เดย์เซียนสไน DX", img:"a_dx.png", d:"(การ์ด DX) เลือกโจมตีทีมไหนก็ได้"}
+                ] },
+                { name: "ตัวตัวได้", count: "8 ใบ", variants: [
+                    {v:"อิ่มใจโหดสุดแล้ว", img:"duel_i.png", d:"ท้าทีมอื่นตอบคำถาม ใครถูกได้หัวใจ"},
+                    {v:"ซันเดย์มาเอาแชมป์", img:"duel_s.png", d:"ท้าทีมอื่นตอบคำถาม ใครถูกได้หัวใจ"}
+                ] },
+                { name: "เปิดเผย", count: "3 ใบ", variants: [{v:"ก้องเบิกเนตร", img:"reveal.png", d:"เลือกกลุ่มเปิดไพ่ทั้งหมดจนจบเทิร์น"}] },
+                { name: "พายุเคออส", count: "3 ใบ", variants: [{v:"เบเน่พิโรธแล้ว", img:"chaos.png", d:"สลับกองการ์ดทุกกลุ่มวนตามเข็มนาฬิกา"}] },
+                { name: "ขโมย", count: "6 + 2DX ใบ", variants: [
+                    {v:"ล้วงกระเป๋า", img:"st_std.png", d:"สุ่มหยิบการ์ด 1 ใบจากมือทีมอื่น"},
+                    {v:"เมตรลูกกระจ๊อก", img:"st_mm.png", d:"สุ่มหยิบการ์ด 1 ใบจากมือทีมอื่น"},
+                    {v:"ก้องหัวหน้าจอมโจร DX", img:"st_dx.png", d:"(การ์ด DX) เลือกชนิดการ์ดที่จะขอได้"}
                 ] }
             ]
         },
@@ -201,14 +237,15 @@
             title: "💣 ระเบิด", color: "#ffcc00",
             groups: [
                 { name: "ระเบิด", count: "16 ใบ", variants: [
-                    {v:"ภพเท่ระเบิด", img:"b_p.png", d:"เสียหัวใจ 1 ดวง"},
-                    {v:"ทานระเบิดกับก้องมั้ย", img:"b_k.png", d:"เสียหัวใจ 1 ดวง"}
+                    {v:"ภพเท่ระเบิด", img:"b_p.png", d:"เสียหัวใจ 1 ดวงทันที"},
+                    {v:"ทานระเบิดกับก้องมั้ย", img:"b_g.png", d:"เสียหัวใจ 1 ดวงทันที"}
                 ] }
             ]
         },
         {
             title: "🔴 กองการ์ดแย่", color: "var(--cursed-accent)",
             groups: [
+                { name: "ไม่ต้องพูดด~~", count: "3 ใบ", variants: [{v:"แพรจุ๊ๆ", img:"silence.png", d:"ห้ามใช้ความสามารถพิเศษในเทิร์นหน้า"}] },
                 { name: "ประชาทัณฑ์", count: "5 ใบ", variants: [
                     {v:"ก้องโดนประหาร", img:"bullyk.png", d:"ผลเสียทั้งหมดจะพุ่งมาลงที่คุณคนเดียว"},
                     {v:"หนุ่ยชอบกินกล้วย", img:"bullyn.png", d:"ผลเสียทั้งหมดจะพุ่งมาลงที่คุณคนเดียว"}
@@ -269,10 +306,10 @@
     function showDetail(group, v, color) {
         const view = document.getElementById('detailView');
         view.innerHTML = `
-            <img src="${rawBaseURL + v.img}" class="detail-img-large" style="border: 2px solid ${color}">
+            <img src="${rawBaseURL + v.img}" class="detail-img-large" style="border: 3px solid ${color}">
             <h2 style="color:${color}; margin: 10px 0;">${group.name}</h2>
-            <div style="color: #888; font-weight: bold; margin-bottom: 10px;">${group.count} | ${v.v}</div>
-            <div class="detail-desc" style="color: #ccc; text-align: left; background: #1a1a1a; padding: 15px; border-radius: 12px; line-height: 1.6;">${v.d}</div>
+            <div style="color: #888; font-weight: 800; margin-bottom: 12px;">${group.count} | ${v.v}</div>
+            <div style="color: #eee; text-align: left; background: #222; padding: 18px; border-radius: 12px; line-height: 1.7; font-size: 0.95em; border-left: 4px solid ${color};">${v.d}</div>
         `;
     }
 
