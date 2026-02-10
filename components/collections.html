@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ก้องระเบิด: Official Description Edition</title>
+    <title>ก้องระเบิด: GitHub Collections</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -120,6 +120,9 @@
     </div>
 
 <script>
+    // URL พื้นฐานสำหรับดึงรูปภาพจาก GitHub
+    const rawBaseURL = "https://raw.githubusercontent.com/winterzthegreat/winterzcards-collections/main/components/";
+
     const typeColors = {
         "ฮาร์ทเลิฟเลิฟ": "#ff4d94", "อย่าอย่าอย่า": "#ff4444", "จู่โจม": "#ff8800",
         "ระเบิด": "#ffcc00", "ตัวตัวได้": "#00d4ff", "ขโมย": "#9d4edd",
@@ -136,13 +139,12 @@
                     {v:"เห็นแก่เกรดอิ่มใจ", img:"h_i.png", d:"ได้หัวใจ 1 ดวง (หากหัวใจหมด ทีมของคุณจะแพ้ออกจากเกม)"},
                     {v:"เบเน่ก็มีหัวจัย", img:"h_b.png", d:"ได้หัวใจ 1 ดวง (หากหัวใจหมด ทีมของคุณจะแพ้ออกจากเกม)"},
                     {v:"หนุ่ยเลิฟๆ", img:"h_n.png", d:"ได้หัวใจ 1 ดวง (หากหัวใจหมด ทีมของคุณจะแพ้ออกจากเกม)"}
-
                 ] },
                 { name: "อย่าอย่าอย่า", count: "10 ใบ", variants: [
                     {v:"ก้องสั่งหยุด", img:"s_k.png", d:"ยกเลิกผลของการ์ดใบอื่น ใช้ขัดขวางการโจมตีหรือการใช้ความสามารถของทีมอื่นได้ทันทีโดยไม่จำเป็นต้องเป็นเทิร์นของตัวเอง"},
                     {v:"ก้องซุปเปอร์เซฟ", img:"s_ks.png", d:"ยกเลิกผลของการ์ดใบอื่น ใช้ขัดขวางการโจมตีหรือการใช้ความสามารถของทีมอื่นได้ทันทีโดยไม่จำเป็นต้องเป็นเทิร์นของตัวเอง"}
                 ] },
-                { name: "เอามาใช้บ้าง", count: "4 ใบ", variants: [{v:"หนุ่ยเด็กเกรียน", img:"swap.png", d:"สลับการ์ดในมือทั้งหมด กับทีมเป้าหมายที่เลือก"}] },
+                { name: "เอามาใช้บ้าง", count: "4 ใบ", variants: [{v:"หนุ่ยเด็กเกรียน", img:"chaos.png", d:"สลับการ์ดในมือทั้งหมด กับทีมเป้าหมายที่เลือก"}] },
                 { name: "จู่โจม", count: "6 + 3DX ใบ", variants: [
                     {v:"ก้องแม่นปืน", img:"a_std.png", d:"ลดหัวใจทีมถัดไป 1 ดวง และสามารถใช้การ์ดจู่โจมเพื่อยกเลิกจู่โจมประเภทเดียวกันได้"},
                     {v:"เดย์เซียนสไน DX", img:"a_dx.png", d:"(ถ้าเป็นการ์ด DX: สามารถเลือกโจมตีทีมไหนก็ได้)"}
@@ -154,9 +156,8 @@
                 { name: "เปิดเผย", count: "3 ใบ", variants: [{v:"ก้องเบิกเนตร", img:"reveal.png", d:"เลือกกลุ่มที่จะต้องเปิดไพ่ทั้งหมดจนกว่าจะลงการ์ดใหม่หรือจบเทิร์น"}] },
                 { name: "พายุเคออส", count: "3 ใบ", variants: [{v:"เบเน่พิโรธแล้ว", img:"chaos.png", d:"สลับกองการ์ดของทุกกลุ่ม วนไปทางเข็มนาฬิกา"}] },
                 { name: "ขโมย", count: "6 + 2DX ใบ", variants: [
-                    {v:"ล้วงกระเป๋า", img:"st_std.png", d:"สุ่มหยิบการ์ด 1 ใบ จากมือทีมอื่น โดยไม่สามารถหยิบหรือขอ ❤️ จากคนที่มี 1 ❤️ ได้"},
-                    {v:"เมตรลูกกระจ๊อก", img:"st_mm.png", d:"สุ่มหยิบการ์ด 1 ใบ จากมือทีมอื่น โดยไม่สามารถหยิบหรือขอ ❤️ จากคนที่มี 1 ❤️ ได้"},
-                    {v:"ก้องหัวหน้าจอมโจร DX", img:"st_dx.png", d:"(ถ้าเป็นการ์ด DX: จะขอโดยเลือกชนิดการ์ดได้ แต่ถ้าอีกฝ่ายไม่มีการ์ดจะไร้ผลทันที)"}
+                    {v:"ล้วงกระเป๋า", img:"st_std.png", d:"สุ่มหยิบการ์ด 1 ใบ จากมือทีมอื่น"},
+                    {v:"ก้องหัวหน้าจอมโจร DX", img:"st_dx.png", d:"(ถ้าเป็นการ์ด DX: จะขอโดยเลือกชนิดการ์ดได้)"}
                 ] }
             ]
         },
@@ -165,8 +166,8 @@
             color: "#ffcc00",
             groups: [
                 { name: "ระเบิด", count: "12 ใบ (ดี) / 4 ใบ (แย่)", variants: [
-                    {v:"ภพเท่ระเบิด", img:"b_p.png", d:"เสียหัวใจ 1 ดวง ทันที (หากหัวใจหมด ทีมของคุณจะแพ้ออกจากเกม)"},
-                    {v:"ทานระเบิดกับก้องมั้ย", img:"b_g.png", d:"เสียหัวใจ 1 ดวง ทันที (หากหัวใจหมด ทีมของคุณจะแพ้ออกจากเกม)"}
+                    {v:"ภพเท่ระเบิด", img:"b_p.png", d:"เสียหัวใจ 1 ดวง ทันที"},
+                    {v:"ทานระเบิดกับก้องมั้ย", img:"b_k.png", d:"เสียหัวใจ 1 ดวง ทันที"}
                 ] }
             ]
         },
@@ -174,10 +175,10 @@
             title: "กองการ์ดแย่",
             color: "var(--cursed-accent)",
             groups: [
-                { name: "ไม่ต้องพูดด~~", count: "3 ใบ", variants: [{v:"แพรจุ๊ๆ", img:"silence.png", d:"การ์ดนี้ทำให้กลุ่มคุณห้ามใช้การ์ดความสามารถพิเศษอะไรเลยต่างๆ ในเทิร์นหน้า"}] },
+                { name: "ไม่ต้องพูดด~~", count: "3 ใบ", variants: [{v:"แพรจุ๊ๆ", img:"s_k.png", d:"ห้ามใช้การ์ดความสามารถพิเศษในเทิร์นหน้า"}] },
                 { name: "ประชาทัณฑ์", count: "5 ใบ", variants: [
-                    {v:"ก้องโดนประหาร", img:"bullyk.png", d:"คุณจะกลายเป็น \"เป้าหมาย\" ของทุกการ์ด สมมติรอบนี้มีการ์ดโจมตี หรือการ์ดแย่ๆ เกิดขึ้นกับใครก็ตาม ผลเสียทั้งหมดจะพุ่งมาลงที่คุณคนเดียว"},
-                    {v:"หนุ่ยชอบกินกล้วย", img:"bullyn.png", d:"คุณจะกลายเป็น \"เป้าหมาย\" ของทุกการ์ด สมมติรอบนี้มีการ์ดโจมตี หรือการ์ดแย่ๆ เกิดขึ้นกับใครก็ตาม ผลเสียทั้งหมดจะพุ่งมาลงที่คุณคนเดียว"}
+                    {v:"ก้องโดนประหาร", img:"bullyk.png", d:"ผลเสียทั้งหมดจะพุ่งมาลงที่คุณคนเดียว"},
+                    {v:"หนุ่ยชอบกินกล้วย", img:"bullyn.png", d:"ผลเสียทั้งหมดจะพุ่งมาลงที่คุณคนเดียว"}
                 ] }
             ]
         }
@@ -203,7 +204,17 @@
                     card.className = 'card';
                     card.style.borderColor = color;
                     card.onclick = () => showDetail(group, v, color);
-                    card.innerHTML = `<img src="${v.img}" class="card-img">`;
+                    
+                    const img = document.createElement('img');
+                    img.src = rawBaseURL + v.img; // ใช้ URL เต็ม
+                    img.className = 'card-img';
+                    img.onerror = () => {
+                        img.style.display = 'none';
+                        card.style.background = '#222';
+                        card.innerHTML = `<small style="font-size:8px; padding:2px;">Missing: ${v.img}</small>`;
+                    };
+                    
+                    card.appendChild(img);
                     row.appendChild(card);
                 });
                 container.appendChild(row);
@@ -214,8 +225,9 @@
 
     function showDetail(group, v, color) {
         const view = document.getElementById('detailView');
+        const fullImgURL = rawBaseURL + v.img;
         view.innerHTML = `
-            <img src="${v.img}" class="detail-img-large" style="border: 3px solid ${color}">
+            <img src="${fullImgURL}" class="detail-img-large" style="border: 3px solid ${color}">
             <div class="detail-title" style="color:${color}">${group.name}</div>
             <div class="detail-count">${group.count} | ${v.v}</div>
             <div class="detail-desc">${v.d}</div>
